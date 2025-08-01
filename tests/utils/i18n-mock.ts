@@ -79,7 +79,7 @@ export class I18nMockEngine implements I18nHandler {
 
   t<Options extends I18nTranslationOptions>(errorKey: string, options: Options): string {
     const message = this.getTranslationValue(errorKey)
-    return mockTranslation(message, options.constraint, options.field, options.value)
+    return mockTranslation(message, options)
   }
 
   /**
@@ -101,7 +101,6 @@ export class I18nMockEngine implements I18nHandler {
 
     return entry
   }
-
 }
 
 /**
@@ -109,11 +108,11 @@ export class I18nMockEngine implements I18nHandler {
  * This is also invoked internally by the mock engine to provide a
  * translated message.
  * @param message The translated message
- * @param constraint The name of the failing constraint
- * @param field The name of the failing field
- * @param value The value of the failing field
+ * @param options The validation options
  */
-export function mockTranslation(message: string, constraint: string, field: string | symbol, value: unknown) {
-  return [ message, constraint, field, value ]
+export function mockTranslation<Options extends I18nTranslationOptions>(message: string, options: Options) {
+  const optionsEntries = Object.entries(options)
+    .map(entry => entry.join(':'))
+  return [ message, ...optionsEntries ]
     .join('|')
 }
