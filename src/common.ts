@@ -65,17 +65,23 @@ export interface ValidationOptions {
   message?: string
 
   /**
-   * An arbitrary key to be provided to the internationalisation
-   * engine, if present, to fetch a specific translation.
-   * @see I18nHandler.t
+   * Stores options to interact with an underlying internationalisation
+   * engine.
    */
-  translationKey?: string
+  i18n?: {
+    /**
+     * An arbitrary key to be provided to the internationalisation
+     * engine, if present, to fetch a specific translation.
+     * @see I18nHandler.t
+     */
+    key?: string
 
-  /**
-   * An interface of the internationalisation engine used to
-   * translate error messages if present.
-   * This mimics `ember-intl`'s interface, so the service can be
-   * directly provided as this property.
-   */
-  i18nHandler?: I18nHandler
+    /**
+     * An interface of the internationalisation engine used to
+     * translate error messages if present.
+     * This mimics `ember-intl`'s interface, so the service can be
+     * directly provided as this property.
+     */
+    handler?: I18nHandler
+  }
 }

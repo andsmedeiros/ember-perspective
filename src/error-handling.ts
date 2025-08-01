@@ -16,8 +16,8 @@ export class UnknownConstraintError extends Error {}
  * @param defaultMessage The default message error to be returned
  * @returns One of the following, in this order:
  *   1. `options.message` if it exists,
- *   2. The value returned by `options.i18nHandler.t` method if available,
- *       1. when called with `options.translationKey` if it exists, or else
+ *   2. The value returned by `options.i18n.handler.t` method if available,
+ *       1. when called with `options.i18n.key` if it exists, or else
  *       2. when called with `validation.${constraint}`
  *   3. `defaultMessage`
  */
@@ -28,16 +28,16 @@ export function messageForError<Options extends ValidationOptions>(
   constraintName: string,
   defaultMessage: string,
 ) {
-  const { message, translationKey, i18nHandler, ...otherOptions } = options
+  const { message, i18n, ...otherOptions } = options
   if(isPresent(message)) {
     return message
   }
 
-  const errorKey = translationKey ?? `validation.${constraintName}`
-  if(i18nHandler?.exists(errorKey)) {
+  const errorKey = i18n?.key ?? `validation.${constraintName}`
+  if(i18n?.handler?.exists(errorKey)) {
     const translationOptions =
       { constraint: constraintName, field, value, ...otherOptions }
-    return i18nHandler.t(errorKey, translationOptions)
+    return i18n.handler.t(errorKey, translationOptions)
   }
 
   return defaultMessage
