@@ -1,4 +1,5 @@
 import type { I18nHandler, I18nTranslationOptions } from '#src/common.ts'
+import { get } from '@ember/object'
 
 /**
  * A value in the registry is either a string (a leaf)
@@ -35,6 +36,11 @@ export class I18nMockEngineError extends Error {}
  * supports querying nested entries.
  */
 export class I18nMockEngine implements I18nHandler {
+  /**
+   * Stores the collection of translation messages stored
+   * in a recursive tree structure
+   * @private
+   */
   private readonly registry: Registry
 
   /**
@@ -72,7 +78,42 @@ export class I18nMockEngine implements I18nHandler {
   }
 
   t<Options extends I18nTranslationOptions>(errorKey: string, options: Options): string {
-    return [errorKey, options.constraint, options.field, options.value]
-      .join('|')
+    const message = this.getTranslationValue(errorKey)
+    return mockTranslation(message, options.constraint, options.field, options.value)
   }
+
+  /**
+   * Fetches a translation from the registry.
+   * Will throw an exception if the requested key is
+   * not found withing the registry.
+   * @param key A key representing the requested message
+   * withing the registry.
+   * Messages withing nested keys can be queried through
+   * dot notation (e.g: `validation.user.address.format`)
+   * @private
+   */
+  private getTranslationValue(key: string) {
+    const entry = get(this.registry, key)
+
+    if(typeof entry !== 'string') {
+      throw new Error(`Could not find message for key ${key}.`)
+    }
+
+    return entry
+  }
+
+}
+
+/**
+ * Returns the canonical translation for a set of parameters.
+ * This is also invoked internally by the mock engine to provide a
+ * translated message.
+ * @param message The translated message
+ * @param constraint The name of the failing constraint
+ * @param field The name of the failing field
+ * @param value The value of the failing field
+ */
+export function mockTranslation(message: string, constraint: string, field: string | symbol, value: unknown) {
+  return [ message, constraint, field, value ]
+    .join('|')
 }
