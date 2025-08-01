@@ -70,18 +70,18 @@ export interface ValidationOptions {
    */
   i18n?: {
     /**
-     * An arbitrary key to be provided to the internationalisation
-     * engine, if present, to fetch a specific translation.
-     * @see I18nHandler.t
-     */
-    key?: string
-
-    /**
      * An interface of the internationalisation engine used to
      * translate error messages if present.
      * This mimics `ember-intl`'s interface, so the service can be
      * directly provided as this property.
      */
-    handler?: I18nHandler
+    handler: I18nHandler
+
+    /**
+     * An arbitrary key to be provided to the internationalisation
+     * engine, if present, to fetch a specific translation.
+     * @see I18nHandler.t
+     */
+    key?: string
   }
 }
