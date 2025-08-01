@@ -8,6 +8,7 @@ module.exports = {
       options: {
         singleQuote: true,
         templateSingleQuote: false,
+        semi: false,
       },
     },
   ],
