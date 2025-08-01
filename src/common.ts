@@ -52,15 +52,16 @@ export interface I18nHandler {
 }
 
 /**
- * Base interface for validation options passed to validators.
+ * Base interface for constraint options passed to validators to
+ * configure their behaviour.
  * These options are also used on error handling when a constraint
  * is not met.
  * @see messageForError
  */
-export interface ValidationOptions {
+export interface ConstraintOptions {
   /**
    * A custom message that will always be returned on a failing
-   * constraint, taking precedence over other
+   * constraint, taking precedence over others
    */
   message?: string
 

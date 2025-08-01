@@ -1,5 +1,5 @@
 import { isPresent } from '@ember/utils'
-import type { ValidationOptions } from '#src/common.ts'
+import type { ConstraintOptions } from './common.ts'
 
 /**
  * Gets thrown when a constraint is not recognised
@@ -21,7 +21,7 @@ export class UnknownConstraintError extends Error {}
  *       2. when called with `validation.${constraint}`
  *   3. `defaultMessage`
  */
-export function messageForError<Options extends ValidationOptions>(
+export function messageForError<Options extends ConstraintOptions>(
   constraint: string,
   field: string | symbol,
   value: unknown,
