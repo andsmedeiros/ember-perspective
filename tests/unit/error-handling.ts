@@ -25,29 +25,35 @@ module('Unit | Error Handling | messageForError', function() {
     const notMessage = 'I am not returned'
 
     const withDefaultMessage = messageForError(
-      'value',
-      'field',
-      { message },
       'constraint',
-      notMessage
+      'field',
+      'value',
+      notMessage,
+      { message },
     )
     assert.equal(withDefaultMessage, message)
 
     const withI18nAndNoKey = messageForError(
-      'value',
-      'field',
-      { message, i18n: { handler: mockEngine } },
       'constraint',
-      notMessage
+      'field',
+      'value',
+      notMessage,
+      {
+        message,
+        i18n: { handler: mockEngine },
+      },
     )
     assert.equal(withI18nAndNoKey, message)
 
     const withI18nAndKey = messageForError(
-      'value',
-      'field',
-      { message, i18n: { handler: mockEngine, key: 'anEntry' } },
       'constraint',
-      notMessage
+      'field',
+      'value',
+      notMessage,
+      {
+        message,
+        i18n: { handler: mockEngine, key: 'anEntry' },
+      },
     )
     assert.equal(withI18nAndKey, message)
   })
@@ -62,28 +68,30 @@ module('Unit | Error Handling | messageForError', function() {
     }
 
     const withNoKey = messageForError(
-      'value',
-      'field',
-      { i18n: { handler: mockEngine } },
       'constraint',
-      notMessage
+      'field',
+      'value',
+      notMessage,
+      { i18n: { handler: mockEngine } },
     )
     assert.equal(
       withNoKey,
-      mockTranslation(registry.validation.constraint, options)
+      mockTranslation(registry.validation.constraint, options),
     )
 
     const withKey = messageForError(
-      'value',
-      'field',
-      { i18n: { handler: mockEngine, key: 'anEntry' } },
       'constraint',
-      notMessage
+      'field',
+      'value',
+      notMessage,
+      {
+        i18n: {
+          handler: mockEngine,
+          key: 'anEntry',
+        },
+      },
     )
-    assert.equal(
-      withKey,
-      mockTranslation(registry.anEntry, options)
-    )
+    assert.equal(withKey, mockTranslation(registry.anEntry, options))
 
     const extraOptions = {
       x: 100,
@@ -91,51 +99,56 @@ module('Unit | Error Handling | messageForError', function() {
       z: 'true'
     }
     const withKeyAndOptions = messageForError(
-      'value',
+      'constraint',
       'field',
+      'value',
+      notMessage,
       {
         i18n: { handler: mockEngine, key: 'anEntry' },
-        ...extraOptions
+        ...extraOptions,
       },
-      'constraint',
-      notMessage
     )
     assert.equal(
       withKeyAndOptions,
       mockTranslation(registry.anEntry, {
         ...options,
-        ...extraOptions
+        ...extraOptions,
       }),
-    );
+    )
   })
 
   test('without other options, default message is returned', function(assert) {
     const defaultMessage = 'I am always returned'
 
     const withOnlyDefaultMessage = messageForError(
-      'value',
-      'field',
-      { },
       'constraint',
-      defaultMessage
+      'field',
+      'value',
+      defaultMessage,
+      {},
     )
     assert.equal(withOnlyDefaultMessage, defaultMessage)
 
     const withI18nAndUnregisteredConstraint = messageForError(
-      'value',
-      'field',
-      { i18n: { handler: mockEngine } },
       'unknown-constraint',
-      defaultMessage
+      'field',
+      'value',
+      defaultMessage,
+      { i18n: { handler: mockEngine } },
     )
     assert.equal(withI18nAndUnregisteredConstraint, defaultMessage)
 
     const withI18nAndUnregisteredKey = messageForError(
-      'value',
-      'field',
-      { i18n: { handler: mockEngine, key: 'notAnEntry' } },
       'constraint',
-      defaultMessage
+      'field',
+      'value',
+      defaultMessage,
+      {
+        i18n: {
+          handler: mockEngine,
+          key: 'notAnEntry',
+        },
+      },
     )
     assert.equal(withI18nAndUnregisteredKey, defaultMessage)
   })

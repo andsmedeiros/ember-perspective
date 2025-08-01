@@ -9,11 +9,11 @@ export class UnknownConstraintError extends Error {}
 /**
  * Gets the most appropriate error message given the current context.
  * This is called after a constraint is failed.
- * @param value The current value of the field that originated the error
+ * @param constraint The name of the constraint that originated the error
  * @param field The name of the model's field being validated
- * @param options The validation options provided
- * @param constraintName The name of the constraint that originated the error
+ * @param value The current value of the field that originated the error
  * @param defaultMessage The default message error to be returned
+ * @param options The validation options provided
  * @returns One of the following, in this order:
  *   1. `options.message` if it exists,
  *   2. The value returned by `options.i18n.handler.t` method if available,
@@ -22,22 +22,25 @@ export class UnknownConstraintError extends Error {}
  *   3. `defaultMessage`
  */
 export function messageForError<Options extends ValidationOptions>(
+  constraint: string,
+  field: string | symbol,
   value: unknown,
-  field: string|symbol,
-  options: Options,
-  constraintName: string,
   defaultMessage: string,
+  options: Options,
 ) {
   const { message, i18n, ...otherOptions } = options
-  if(isPresent(message)) {
+  if (isPresent(message)) {
     return message
   }
 
-  const errorKey = i18n?.key ?? `validation.${constraintName}`
-  if(i18n?.handler?.exists(errorKey)) {
-    const translationOptions =
-      { constraint: constraintName, field, value, ...otherOptions }
-    return i18n.handler.t(errorKey, translationOptions)
+  const errorKey = i18n?.key ?? `validation.${constraint}`
+  if (i18n?.handler?.exists(errorKey)) {
+    return i18n.handler.t(errorKey, {
+      constraint,
+      field,
+      value,
+      ...otherOptions,
+    })
   }
 
   return defaultMessage
