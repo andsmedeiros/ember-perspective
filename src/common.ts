@@ -108,7 +108,7 @@ export interface ConstraintOptions {
 /**
  * Defines the type that validator functions must return.
  */
-export type ValidationResult = string | Promise<string | undefined> | undefined
+export type ValidationResult = string | Promise<string | void> | void
 
 /**
  * Defines the signature common to all validation functions.
