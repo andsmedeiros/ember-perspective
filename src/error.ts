@@ -13,6 +13,12 @@ export class UnknownConstraintError extends Error {}
 export class InvalidValueForConstraintError extends Error {}
 
 /**
+ * Gets thrown when a validation is requested but some
+ * mandatory option is absent.
+ */
+export class RequiredOptionMissingError extends Error {}
+
+/**
  * Gets the most appropriate error message given the current context.
  * This is called after a constraint is failed.
  * @param model The model being validated
