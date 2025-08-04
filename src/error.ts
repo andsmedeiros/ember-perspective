@@ -1,5 +1,5 @@
 import { isPresent } from '@ember/utils'
-import type { ConstraintOptions } from './common.ts'
+import type { ConstraintOptions, Field, Model } from './common.ts'
 
 /**
  * Gets thrown when a constraint is not recognised
@@ -7,11 +7,18 @@ import type { ConstraintOptions } from './common.ts'
 export class UnknownConstraintError extends Error {}
 
 /**
+ * Gets thrown when a value cannot be constrained because it
+ * has an unexpected value type
+ */
+export class InvalidValueForConstraintError extends Error {}
+
+/**
  * Gets the most appropriate error message given the current context.
  * This is called after a constraint is failed.
- * @param constraint The name of the constraint that originated the error
+ * @param model The model being validated
  * @param field The name of the model's field being validated
  * @param value The current value of the field that originated the error
+ * @param constraint The name of the constraint that originated the error
  * @param defaultMessage The default message error to be returned
  * @param options The validation options provided
  * @returns One of the following, in this order:
@@ -22,9 +29,10 @@ export class UnknownConstraintError extends Error {}
  *   3. `defaultMessage`
  */
 export function messageForError<Options extends ConstraintOptions>(
-  constraint: string,
-  field: string | symbol,
+  model: Model,
+  field: Field,
   value: unknown,
+  constraint: string,
   defaultMessage: string,
   options: Options,
 ) {
@@ -37,6 +45,7 @@ export function messageForError<Options extends ConstraintOptions>(
   if (i18n?.handler?.exists(errorKey)) {
     return i18n.handler.t(errorKey, {
       constraint,
+      model,
       field,
       value,
       ...otherOptions,
