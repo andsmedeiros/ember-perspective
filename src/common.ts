@@ -1,3 +1,16 @@
+
+/**
+ * Defines what type of field designators we accept.
+ * This all should be accepted in bracket notation independently
+ * of the underlying model.
+ */
+export type Field = string | symbol
+
+/**
+ * Defines the type of model that can be validated, i.e. objects
+ */
+export type Model = Record<Field, unknown>
+
 /**
  * Contains the data that is always present on translation
  * options and can be used in all translations.
@@ -10,9 +23,14 @@ export interface I18nTranslationOptions {
   constraint: string
 
   /**
+   * THe model that failed the constraint
+   */
+  model: Model
+
+  /**
    * The name of the field that failed the constraint
    */
-  field: string | symbol
+  field: Field
 
   /**
    * The value of the field that failed the constraint
@@ -85,4 +103,21 @@ export interface ConstraintOptions {
      */
     key?: string
   }
+}
+
+/**
+ * Defines the type that validator functions must return.
+ */
+export type ValidationResult = string | Promise<string | undefined> | undefined
+
+/**
+ * Defines the signature common to all validation functions.
+ */
+export type ValidatorFunction<Options extends ConstraintOptions> = {
+  (
+    model: object,
+    field: string | symbol,
+    value: unknown,
+    options: Options
+  ): ValidationResult
 }
