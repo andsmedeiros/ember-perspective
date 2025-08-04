@@ -115,8 +115,8 @@ export type ValidationResult = string | Promise<string | undefined> | undefined
  */
 export type ValidatorFunction<Options extends ConstraintOptions> = {
   (
-    model: object,
-    field: string | symbol,
+    model: Model,
+    field: Field,
     value: unknown,
     options: Options
   ): ValidationResult
