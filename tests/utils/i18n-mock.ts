@@ -1,4 +1,5 @@
 import type { I18nHandler, I18nTranslationOptions } from '#src/common.ts'
+import { compare } from '@ember/utils'
 import { get } from '@ember/object'
 
 /**
@@ -112,6 +113,7 @@ export class I18nMockEngine implements I18nHandler {
  */
 export function mockTranslation<Options extends I18nTranslationOptions>(message: string, options: Options) {
   const optionsEntries = Object.entries(options)
+    .sort((a, b) => compare(a[0], b[0]))
     .map(entry => entry.join(':'))
   return [ message, ...optionsEntries ]
     .join('|')
