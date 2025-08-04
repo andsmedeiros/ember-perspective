@@ -84,7 +84,7 @@ export function validateType(model: Model, field: Field, value: unknown, options
  */
 export interface InstanceConstraintOptions<T> extends ConstraintOptions {
   Constructor: {
-    new(...args: unknown[]): T
+    new(...args: never[]): T
   }
 }
 
@@ -341,7 +341,7 @@ export function validateUUID(model: Model, field: Field, value: unknown, options
  * Contains a user-provide validator function to be used in custom validations.
  */
 export interface CustomConstraintOptions extends ConstraintOptions {
-  with: ValidatorFunction<ConstraintOptions>
+  with: ValidatorFunction<this>
 }
 
 /**
@@ -352,6 +352,11 @@ export interface CustomConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateCustom(model: Model, field: Field, value: unknown, options: CustomConstraintOptions) {
+export function validateCustom<Options extends CustomConstraintOptions>(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: Options
+) {
   return options.with(model, field, value, options)
 }
