@@ -51,7 +51,7 @@ export type AbsenceConstraintOptions = ConstraintOptions
  * @param options
  * @see isNone
  */
-export function validateAbsence(model: Model, field: Field, value: unknown, options: PresenceConstraintOptions) {
+export function validateAbsence(model: Model, field: Field, value: unknown, options: AbsenceConstraintOptions) {
   if(!isNone(value)) {
     const defaultMessage = `Must not be present`
     return messageForError(model, field, value, 'absence', defaultMessage, options)
@@ -199,7 +199,7 @@ export function validateEmail(model: Model, field: Field, value: unknown, option
  * Contains a regular expression against which to match the provided value
  */
 export interface FormatConstraintOptions extends ConstraintOptions {
-  with: RegExp
+  pattern: RegExp
 }
 
 /**
@@ -217,7 +217,7 @@ export function validateFormat(model: Model, field: Field, value: unknown, optio
     throw new InvalidValueForConstraintError(errorMessage)
   }
 
-  if (!value.match(options.with)) {
+  if (!value.match(options.pattern)) {
     const defaultMessage = `Must have a valid format`
     return messageForError(
       model,
