@@ -1,6 +1,6 @@
 import { module, test } from 'qunit'
 import { I18nMockEngine, mockTranslation } from '../utils/i18n-mock.ts'
-import { messageForError } from '#src/error-handling.ts'
+import { messageForError } from '#src/error.ts'
 
 const translationEntry = 'I am translated'
 const registry = {
@@ -15,7 +15,8 @@ const registry = {
   },
   validation: {
     constraint: translationEntry
-  }
+  },
+  withParam: `hello!`
 }
 const mockEngine = new I18nMockEngine(registry)
 
@@ -25,18 +26,20 @@ module('Unit | Error Handling | messageForError', function() {
     const notMessage = 'I am not returned'
 
     const withDefaultMessage = messageForError(
-      'constraint',
+      {},
       'field',
       'value',
+      'constraint',
       notMessage,
       { message },
     )
     assert.equal(withDefaultMessage, message)
 
     const withI18nAndNoKey = messageForError(
-      'constraint',
+      {},
       'field',
       'value',
+      'constraint',
       notMessage,
       {
         message,
@@ -46,9 +49,10 @@ module('Unit | Error Handling | messageForError', function() {
     assert.equal(withI18nAndNoKey, message)
 
     const withI18nAndKey = messageForError(
-      'constraint',
+      {},
       'field',
       'value',
+      'constraint',
       notMessage,
       {
         message,
@@ -60,17 +64,20 @@ module('Unit | Error Handling | messageForError', function() {
 
 
   test('messages are fetched from the internationalisation engine', function(assert) {
+    const model = { name: 'Test User' }
     const notMessage = 'I am not returned'
     const options = {
-      constraint: 'constraint',
+      model,
       field: 'field',
       value: 'value',
+      constraint: 'constraint',
     }
 
     const withNoKey = messageForError(
-      'constraint',
+      model,
       'field',
       'value',
+      'constraint',
       notMessage,
       { i18n: { handler: mockEngine } },
     )
@@ -80,9 +87,10 @@ module('Unit | Error Handling | messageForError', function() {
     )
 
     const withKey = messageForError(
-      'constraint',
+      model,
       'field',
       'value',
+      'constraint',
       notMessage,
       {
         i18n: {
@@ -99,9 +107,10 @@ module('Unit | Error Handling | messageForError', function() {
       z: 'true'
     }
     const withKeyAndOptions = messageForError(
-      'constraint',
+      model,
       'field',
       'value',
+      'constraint',
       notMessage,
       {
         i18n: { handler: mockEngine, key: 'anEntry' },
@@ -115,33 +124,49 @@ module('Unit | Error Handling | messageForError', function() {
         ...extraOptions,
       }),
     )
+
+    const withMessageParam = messageForError(
+      model,
+      'field',
+      'value',
+      'constraint',
+      notMessage,
+      {
+        i18n: { handler: mockEngine, key: 'withParam' },
+        name: model.name
+      },
+    )
+    assert.true(withMessageParam.includes(model.name))
   })
 
   test('without other options, default message is returned', function(assert) {
     const defaultMessage = 'I am always returned'
 
     const withOnlyDefaultMessage = messageForError(
-      'constraint',
+      {},
       'field',
       'value',
+      'constraint',
       defaultMessage,
       {},
     )
     assert.equal(withOnlyDefaultMessage, defaultMessage)
 
     const withI18nAndUnregisteredConstraint = messageForError(
-      'unknown-constraint',
+      {},
       'field',
       'value',
+      'unknown-constraint',
       defaultMessage,
       { i18n: { handler: mockEngine } },
     )
     assert.equal(withI18nAndUnregisteredConstraint, defaultMessage)
 
     const withI18nAndUnregisteredKey = messageForError(
-      'constraint',
+      {},
       'field',
       'value',
+      'constraint',
       defaultMessage,
       {
         i18n: {
