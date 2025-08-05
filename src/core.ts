@@ -178,7 +178,7 @@ export async function validateField(
   model: Model,
   field: Field,
   constraints: FieldConstraints,
-  { haltBy = 'never' }: { haltBy?: FieldValidationHaltBy  } = {},
+  { haltBy = 'never' }: { haltBy?: FieldValidationHaltBy } = {},
 ) {
   const result = []
 
@@ -194,7 +194,10 @@ export async function validateField(
   return result
 }
 
-export type ModelValidationHaltBy = 'never' | 'first-error' | 'first-field-error'
+export type ModelValidationHaltBy =
+  | 'never'
+  | 'first-error'
+  | 'first-field-error'
 export type ModelConstraints = Record<string, FieldConstraints>
 
 /**
@@ -215,7 +218,7 @@ export type ModelConstraints = Record<string, FieldConstraints>
 export async function validate(
   model: Model,
   modelConstraints: ModelConstraints,
-  { haltBy = 'never' }: { haltBy?: ModelValidationHaltBy } = {}
+  { haltBy = 'never' }: { haltBy?: ModelValidationHaltBy } = {},
 ) {
   const result: Record<string, string[]> = {}
 
