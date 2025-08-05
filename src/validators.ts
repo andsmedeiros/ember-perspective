@@ -4,6 +4,7 @@ import type {
   Model,
   ValidatorFunction
 } from './common.ts'
+import type { Constructor, Type } from './type-utils/object-natures.ts'
 
 import { isNone } from '@ember/utils'
 import { InvalidValueForConstraintError, messageForError } from './error.ts'
@@ -62,7 +63,7 @@ export function validateAbsence(model: Model, field: Field, value: unknown, opti
  * Contains a type name to be checked against `typeof` output
  */
 export interface TypeConstraintOptions extends ConstraintOptions {
-  type: 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined'
+  type: Type
 }
 
 /**
@@ -83,9 +84,7 @@ export function validateType(model: Model, field: Field, value: unknown, options
  * Contains a class against which values will be tested
  */
 export interface InstanceConstraintOptions<T> extends ConstraintOptions {
-  Constructor: {
-    new(...args: never[]): T
-  }
+  Constructor: Constructor<T>
 }
 
 /**
