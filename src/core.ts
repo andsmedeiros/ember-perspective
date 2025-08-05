@@ -159,22 +159,26 @@ async function validateConstraint<Options extends CoreOptions>(
   }
 }
 
+export type FieldValidationHaltBy = 'never' | 'first-error'
+export type FieldConstraints = Record<string, CoreOptions>
+
 /**
  * Takes a model, the name of a field of that model and a set of constraints,
  * then validates the model's field
- * @param model {Object} The object whose property should be validated
- * @param field {String|Symbol} The name of the model's field to be validated
- * @param constraints {Object} An object describing which constraints should be applied
+ * @param model The object whose property should be validated
+ * @param field The name of the model's field to be validated
+ * @param constraints An object describing which constraints should be applied
  * when validating the field. Keys must contain a known constraint name and values must
  * contain supported configuration options for each corresponding constraint
- * @param haltBy {'never'|'first-error'} Whether to abort validation after a constraint fails
- * @returns {Promise<String[]>} An array of error messages, if any. If all constraints were
+ * @param haltBy Whether to abort validation after a constraint fails
+ * @returns An array of error messages, if any. If all constraints were
  * successful, returns an empty array.
  */
 export async function validateField(
-  model,
-  field,
-  { constraints, haltBy = 'never' },
+  model: Model,
+  field: Field,
+  constraints: FieldConstraints,
+  { haltBy = 'never' }: { haltBy?: FieldValidationHaltBy  } = {},
 ) {
   const result = []
 
@@ -190,28 +194,34 @@ export async function validateField(
   return result
 }
 
+export type ModelValidationHaltBy = 'never' | 'first-error' | 'first-field-error'
+export type ModelConstraints = Record<string, FieldConstraints>
+
 /**
  * Takes a model and a set of constraints, then validates the model
- * @param model {Object} The object to be validated
- * @param modelConstraints {Object} An object describing what fields should be validated
+ * @param model The object to be validated
+ * @param modelConstraints An object describing what fields should be validated
  * and which constraints to apply to each of them. Keys must contain the name of a field
  * and values must contain the constraint definitions for each corresponding field
- * @param haltBy {'never'|'first-error'|'first-field-error'} When to halt validation
+ * @param haltBy {} When to halt validation
  *   1. `never`: Never halts
  *   2. `first-error`: Halts after any constraint fails in any field; fields not validated
  *      will remain so
  *   3. `first-field-error`: Halts after the first constraint fail for each field; all fields
  *      will be validated
- * @returns {Promise<{(String|Symbol): String[]}>} An object containing each validated field's error messages, if any.
+ * @returns An object containing each validated field's error messages, if any.
  * If all constraints were successful for some field, its error array will be empty.
  */
-export async function validate(model, modelConstraints, { haltBy = 'never' }) {
-  const result = {}
+export async function validate(
+  model: Model,
+  modelConstraints: ModelConstraints,
+  { haltBy = 'never' }: { haltBy?: ModelValidationHaltBy } = {}
+) {
+  const result: Record<string, string[]> = {}
 
   for (const [field, constraints] of Object.entries(modelConstraints)) {
     const haltFieldValidationBy = haltBy !== 'never' ? 'first-error' : 'never'
-    const errors = await validateField(model, field, {
-      constraints,
+    const errors = await validateField(model, field, constraints, {
       haltBy: haltFieldValidationBy,
     })
 
