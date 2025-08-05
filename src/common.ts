@@ -1,4 +1,3 @@
-
 /**
  * Defines what type of field designators we accept.
  * This all should be accepted in bracket notation independently
@@ -65,7 +64,7 @@ export interface I18nHandler {
    */
   t<Options extends I18nTranslationOptions>(
     errorKey: string,
-    options: Options
+    options: Options,
   ): string
 }
 
@@ -118,6 +117,6 @@ export type ValidatorFunction<Options extends ConstraintOptions> = {
     model: Model,
     field: Field,
     value: unknown,
-    options: Options
+    options: Options,
   ): ValidationResult
 }

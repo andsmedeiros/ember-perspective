@@ -1,5 +1,9 @@
 import type { ConstraintOptions, Field, Model } from './common.ts'
-import { InvalidValueForConstraintError, RequiredOptionMissingError, UnknownConstraintError } from './error.ts'
+import {
+  InvalidValueForConstraintError,
+  RequiredOptionMissingError,
+  UnknownConstraintError,
+} from './error.ts'
 import { TYPE_VALUES, type Type } from './type-utils/object-natures.ts'
 import {
   validatePresence,
@@ -20,7 +24,7 @@ import {
   type CustomConstraintOptions,
   type TypeConstraintOptions,
   type InstanceConstraintOptions,
-  type ExclusionConstraintOptions
+  type ExclusionConstraintOptions,
 } from './validators.ts'
 
 export interface CoreOptions extends ConstraintOptions {
@@ -30,8 +34,8 @@ export interface CoreOptions extends ConstraintOptions {
 async function validateConstraint<Options extends CoreOptions>(
   model: Model,
   field: Field,
-  constraint:
-  string, options: Options | true
+  constraint: string,
+  options: Options | true,
 ) {
   if (options === true) {
     options = {} as Options
@@ -53,7 +57,7 @@ async function validateConstraint<Options extends CoreOptions>(
       return validateAbsence(model, field, value, options)
 
     case 'type':
-      if(!('type' in options) || !(TYPE_VALUES).includes(options.type as Type)) {
+      if (!('type' in options) || !TYPE_VALUES.includes(options.type as Type)) {
         const errorMessage = 'A valid type string must be supplied'
         throw new RequiredOptionMissingError(errorMessage)
       }
@@ -61,12 +65,20 @@ async function validateConstraint<Options extends CoreOptions>(
       return validateType(model, field, value, options as TypeConstraintOptions)
 
     case 'instance':
-      if(!('Constructor' in options) || typeof options.constructor !== 'function') {
+      if (
+        !('Constructor' in options) ||
+        typeof options.constructor !== 'function'
+      ) {
         const errorMessage = 'A valid constructor or class must be supplied'
         throw new InvalidValueForConstraintError(errorMessage)
       }
 
-      return validateInstance(model, field, value, options as InstanceConstraintOptions<never>)
+      return validateInstance(
+        model,
+        field,
+        value,
+        options as InstanceConstraintOptions<never>,
+      )
 
     case 'length':
       return validateLength(model, field, value, options)
@@ -75,43 +87,72 @@ async function validateConstraint<Options extends CoreOptions>(
       return validateEmail(model, field, value, options)
 
     case 'format':
-      if(!('pattern' in options) || !(options.pattern instanceof RegExp)) {
+      if (!('pattern' in options) || !(options.pattern instanceof RegExp)) {
         const errorMessage = 'Pattern for validation must be supplied'
         throw new RequiredOptionMissingError(errorMessage)
       }
-      return validateFormat(model, field, value, options as FormatConstraintOptions)
+      return validateFormat(
+        model,
+        field,
+        value,
+        options as FormatConstraintOptions,
+      )
 
     case 'confirmation':
-      if(!('on' in options) || !['string', 'number', 'symbol'].includes(typeof options.on)) {
-        const errorMessage = 'The name of the confirmation field must be provided'
+      if (
+        !('on' in options) ||
+        !['string', 'number', 'symbol'].includes(typeof options.on)
+      ) {
+        const errorMessage =
+          'The name of the confirmation field must be provided'
         throw new RequiredOptionMissingError(errorMessage)
       }
-      return validateConfirmation(model, field, value, options as ConfirmationConstraintOptions)
+      return validateConfirmation(
+        model,
+        field,
+        value,
+        options as ConfirmationConstraintOptions,
+      )
 
     case 'inclusion':
-      if(!('in' in options) || !Array.isArray(options.in)) {
+      if (!('in' in options) || !Array.isArray(options.in)) {
         const errorMessage = 'An array of the accepted values must be provided'
         throw new RequiredOptionMissingError(errorMessage)
       }
-      return validateInclusion(model, field, value, options as InclusionConstraintOptions)
+      return validateInclusion(
+        model,
+        field,
+        value,
+        options as InclusionConstraintOptions,
+      )
 
     case 'exclusion':
-      if(!('from' in options) || !Array.isArray(options.from)) {
+      if (!('from' in options) || !Array.isArray(options.from)) {
         const errorMessage = 'An array of the rejected values must be provided'
         throw new RequiredOptionMissingError(errorMessage)
       }
 
-      return validateExclusion(model, field, value, options as ExclusionConstraintOptions)
+      return validateExclusion(
+        model,
+        field,
+        value,
+        options as ExclusionConstraintOptions,
+      )
 
     case 'uuid':
       return validateUUID(model, field, value, options)
 
     case 'custom':
-      if(!('with' in options) || typeof options.with !== 'function') {
+      if (!('with' in options) || typeof options.with !== 'function') {
         const errorMessage = 'A custom validator function must be provided'
         throw new RequiredOptionMissingError(errorMessage)
       }
-      return validateCustom(model, field, value, options as CustomConstraintOptions)
+      return validateCustom(
+        model,
+        field,
+        value,
+        options as CustomConstraintOptions,
+      )
 
     default:
       throw new UnknownConstraintError(`Unknown constraint ${constraint}`)

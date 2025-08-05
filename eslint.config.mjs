@@ -12,25 +12,25 @@
  *     npx eslint --inspect-config
  *
  */
-import babelParser from '@babel/eslint-parser';
-import js from '@eslint/js';
-import prettier from 'eslint-config-prettier';
-import ember from 'eslint-plugin-ember/recommended';
-import importPlugin from 'eslint-plugin-import';
-import n from 'eslint-plugin-n';
-import globals from 'globals';
-import ts from 'typescript-eslint';
+import babelParser from '@babel/eslint-parser'
+import js from '@eslint/js'
+import prettier from 'eslint-config-prettier'
+import ember from 'eslint-plugin-ember/recommended'
+import importPlugin from 'eslint-plugin-import'
+import n from 'eslint-plugin-n'
+import globals from 'globals'
+import ts from 'typescript-eslint'
 
 const esmParserOptions = {
   ecmaFeatures: { modules: true },
   ecmaVersion: 'latest',
-};
+}
 
 const tsParserOptions = {
   projectService: true,
   project: true,
   tsconfigRootDir: import.meta.dirname,
-};
+}
 
 const config = [
   js.configs.recommended,
@@ -133,6 +133,6 @@ const config = [
       },
     },
   },
-];
+]
 
-export default ts.config(...config);
+export default ts.config(...config)

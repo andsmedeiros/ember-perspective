@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 module.exports = {
   plugins: ['prettier-plugin-ember-template-tag'],
@@ -12,4 +12,4 @@ module.exports = {
       },
     },
   ],
-};
+}

@@ -70,15 +70,18 @@ export class I18nMockEngine implements I18nHandler {
     let currentEntry: RegistryValue = this.registry
     for (const member of errorKey.split('.')) {
       if (typeof currentEntry === 'object' && member in currentEntry) {
-        currentEntry = currentEntry[member]!;
-        continue;
+        currentEntry = currentEntry[member]!
+        continue
       }
-      return false;
+      return false
     }
     return typeof currentEntry === 'string'
   }
 
-  t<Options extends I18nTranslationOptions>(errorKey: string, options: Options): string {
+  t<Options extends I18nTranslationOptions>(
+    errorKey: string,
+    options: Options,
+  ): string {
     const message = this.getTranslationValue(errorKey)
     return mockTranslation(message, options)
   }
@@ -96,7 +99,7 @@ export class I18nMockEngine implements I18nHandler {
   private getTranslationValue(key: string) {
     const entry = get(this.registry, key)
 
-    if(typeof entry !== 'string') {
+    if (typeof entry !== 'string') {
       throw new Error(`Could not find message for key ${key}.`)
     }
 
@@ -111,10 +114,12 @@ export class I18nMockEngine implements I18nHandler {
  * @param message The translated message
  * @param options The validation options
  */
-export function mockTranslation<Options extends I18nTranslationOptions>(message: string, options: Options) {
+export function mockTranslation<Options extends I18nTranslationOptions>(
+  message: string,
+  options: Options,
+) {
   const optionsEntries = Object.entries(options)
     .sort((a, b) => compare(a[0], b[0]))
-    .map(entry => entry.join(':'))
-  return [ message, ...optionsEntries ]
-    .join('|')
+    .map((entry) => entry.join(':'))
+  return [message, ...optionsEntries].join('|')
 }

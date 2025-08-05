@@ -10,18 +10,18 @@ const registry = {
     aChild: 'this is a child',
     anotherChild: 'this is another child',
     anotherNested: {
-      remember: 'all leaves must be strings'
-    }
+      remember: 'all leaves must be strings',
+    },
   },
   validation: {
-    constraint: translationEntry
+    constraint: translationEntry,
   },
-  withParam: `hello!`
+  withParam: `hello!`,
 }
 const mockEngine = new I18nMockEngine(registry)
 
-module('Unit | Error Handling | messageForError', function() {
-  test('if present, options.message is always returned', function(assert) {
+module('Unit | Error Handling | messageForError', function () {
+  test('if present, options.message is always returned', function (assert) {
     const message = 'I am always returned'
     const notMessage = 'I am not returned'
 
@@ -62,8 +62,7 @@ module('Unit | Error Handling | messageForError', function() {
     assert.equal(withI18nAndKey, message)
   })
 
-
-  test('messages are fetched from the internationalisation engine', function(assert) {
+  test('messages are fetched from the internationalisation engine', function (assert) {
     const model = { name: 'Test User' }
     const notMessage = 'I am not returned'
     const options = {
@@ -104,7 +103,7 @@ module('Unit | Error Handling | messageForError', function() {
     const extraOptions = {
       x: 100,
       y: false,
-      z: 'true'
+      z: 'true',
     }
     const withKeyAndOptions = messageForError(
       model,
@@ -133,13 +132,13 @@ module('Unit | Error Handling | messageForError', function() {
       notMessage,
       {
         i18n: { handler: mockEngine, key: 'withParam' },
-        name: model.name
+        name: model.name,
       },
     )
     assert.true(withMessageParam.includes(model.name))
   })
 
-  test('without other options, default message is returned', function(assert) {
+  test('without other options, default message is returned', function (assert) {
     const defaultMessage = 'I am always returned'
 
     const withOnlyDefaultMessage = messageForError(

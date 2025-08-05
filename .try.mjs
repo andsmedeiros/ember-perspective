@@ -14,14 +14,14 @@ module.exports = async function (defaults) {
     'template-only-glimmer-components': true,
     'no-implicit-route-model': true,
   }),
-};
+}
 
 const compatDeps = {
   '@embroider/compat': '^4.0.3',
   'ember-cli': '^5.12.0',
   'ember-auto-import': '^2.10.0',
   '@ember/optional-features': '^2.2.0',
-};
+}
 
 export default {
   scenarios: [
@@ -84,4 +84,4 @@ export default {
       },
     },
   ],
-};
+}

@@ -2,7 +2,7 @@ import type {
   ConstraintOptions,
   Field,
   Model,
-  ValidatorFunction
+  ValidatorFunction,
 } from './common.ts'
 import type { Constructor, Type } from './type-utils/object-natures.ts'
 
@@ -25,7 +25,12 @@ export type PresenceConstraintOptions = ConstraintOptions
  * @param options
  * @see isNone
  */
-export function validatePresence(model: Model, field: Field, value: unknown, options: PresenceConstraintOptions) {
+export function validatePresence(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: PresenceConstraintOptions,
+) {
   if (isNone(value)) {
     const defaultMessage = `Must be present`
     return messageForError(
@@ -52,10 +57,22 @@ export type AbsenceConstraintOptions = ConstraintOptions
  * @param options
  * @see isNone
  */
-export function validateAbsence(model: Model, field: Field, value: unknown, options: AbsenceConstraintOptions) {
-  if(!isNone(value)) {
+export function validateAbsence(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: AbsenceConstraintOptions,
+) {
+  if (!isNone(value)) {
     const defaultMessage = `Must not be present`
-    return messageForError(model, field, value, 'absence', defaultMessage, options)
+    return messageForError(
+      model,
+      field,
+      value,
+      'absence',
+      defaultMessage,
+      options,
+    )
   }
 }
 
@@ -73,8 +90,13 @@ export interface TypeConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateType(model: Model, field: Field, value: unknown, options: TypeConstraintOptions) {
-  if(typeof value !== options.type) {
+export function validateType(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: TypeConstraintOptions,
+) {
+  if (typeof value !== options.type) {
     const defaultMessage = `Must be a ${options.type}`
     return messageForError(model, field, value, 'type', defaultMessage, options)
   }
@@ -94,8 +116,13 @@ export interface InstanceConstraintOptions<T> extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateInstance<T>(model: Model, field: Field, value: unknown, options: InstanceConstraintOptions<T>) {
-  if(!(value instanceof options.Constructor)) {
+export function validateInstance<T>(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: InstanceConstraintOptions<T>,
+) {
+  if (!(value instanceof options.Constructor)) {
     const defaultMessage = `Must be an instance of ${options.Constructor.name}`
     return messageForError(model, field, value, 'type', defaultMessage, options)
   }
@@ -123,9 +150,15 @@ export interface LengthConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateLength(model: Model, field: Field, value: unknown, options: LengthConstraintOptions) {
-  if(!hasLength(value)) {
-    const errorMessage = 'Constrained field should have a numeric `length` property'
+export function validateLength(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: LengthConstraintOptions,
+) {
+  if (!hasLength(value)) {
+    const errorMessage =
+      'Constrained field should have a numeric `length` property'
     throw new InvalidValueForConstraintError(errorMessage)
   }
 
@@ -182,15 +215,27 @@ export type EmailConstraintOptions = ConstraintOptions
  * @param value
  * @param options
  */
-export function validateEmail(model: Model, field: Field, value: unknown, options: EmailConstraintOptions) {
-  if(typeof value !== 'string') {
+export function validateEmail(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: EmailConstraintOptions,
+) {
+  if (typeof value !== 'string') {
     const errorMessage = `Must be a string`
     throw new InvalidValueForConstraintError(errorMessage)
   }
 
   if (!isEmailValid(value)) {
     const defaultMessage = `Must be a valid email address`
-    return messageForError(model, field, value, 'email', defaultMessage, options)
+    return messageForError(
+      model,
+      field,
+      value,
+      'email',
+      defaultMessage,
+      options,
+    )
   }
 }
 
@@ -210,8 +255,13 @@ export interface FormatConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateFormat(model: Model, field: Field, value: unknown, options: FormatConstraintOptions)  {
-  if(typeof value !== 'string') {
+export function validateFormat(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: FormatConstraintOptions,
+) {
+  if (typeof value !== 'string') {
     const errorMessage = `Must be a string`
     throw new InvalidValueForConstraintError(errorMessage)
   }
@@ -244,7 +294,12 @@ export interface ConfirmationConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateConfirmation(model: Model, field: Field, value: unknown, options: ConfirmationConstraintOptions) {
+export function validateConfirmation(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: ConfirmationConstraintOptions,
+) {
   if (value !== model[options.on]) {
     const defaultMessage = `Must match '${String(options.on)}'`
     return messageForError(
@@ -272,7 +327,12 @@ export interface InclusionConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateInclusion(model: Model, field: Field, value: unknown, options: InclusionConstraintOptions) {
+export function validateInclusion(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: InclusionConstraintOptions,
+) {
   if (!options.in.includes(value)) {
     const defaultMessage = 'Must be an allowed value'
     return messageForError(
@@ -300,7 +360,12 @@ export interface ExclusionConstraintOptions extends ConstraintOptions {
  * @param value
  * @param options
  */
-export function validateExclusion(model: Model, field: Field, value: unknown, options: ExclusionConstraintOptions) {
+export function validateExclusion(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: ExclusionConstraintOptions,
+) {
   if (options.from.includes(value)) {
     const defaultMessage = 'Must not be a disallowed value'
     return messageForError(
@@ -324,8 +389,13 @@ export type UUIDConstraintOptions = ConstraintOptions
  * @param value
  * @param options
  */
-export function validateUUID(model: Model, field: Field, value: unknown, options: UUIDConstraintOptions) {
-  if(typeof value !== 'string') {
+export function validateUUID(
+  model: Model,
+  field: Field,
+  value: unknown,
+  options: UUIDConstraintOptions,
+) {
+  if (typeof value !== 'string') {
     const errorMessage = `Must be a string`
     throw new InvalidValueForConstraintError(errorMessage)
   }
@@ -355,7 +425,7 @@ export function validateCustom<Options extends CustomConstraintOptions>(
   model: Model,
   field: Field,
   value: unknown,
-  options: Options
+  options: Options,
 ) {
   return options.with(model, field, value, options)
 }
