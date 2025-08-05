@@ -15,3 +15,6 @@ ember-cli-build.js
 node_modules/
 .eslintcache
 .prettiercache
+
+# ide
+.idea
